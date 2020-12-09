@@ -29,9 +29,9 @@
           - This texture is initialized once per identity and is aimed to be pose-invariant.
       3) After initialization of adaptive parameters, the *inference generator* <img src="https://latex.codecogs.com/gif.latex?G_{inf}\Big(y^{i}(t),&space;\{e^{i}_{k}(s)\}&space;\Big)"> takes target keypoints as an input and predicts low-frequency component <img src="https://latex.codecogs.com/gif.latex?\hat{x}_{LF}^{i}(t)">.
           - This low-frequency component encodes basic facial features, skin color and lighting.
-          - After that, the high-frequency component <img src="https://latex.codecogs.com/gif.latex?\hat{x}_{HF}^{i}(t)"> is obtained by warping previously predicted texture.
+          - After that, the high-frequency component <img src="https://latex.codecogs.com/gif.latex?\hat{x}_{HF}^{i}(t)"> is obtained by warping previously predicted static texture.
           - As a final step, low-frequency and high-frequency components are added together <img src="https://latex.codecogs.com/gif.latex?\hat{x}^{i}(t)&space;=&space;\hat{x}_{LF}^{i}(t)&space;&plus;&space;\hat{x}_{HF}^{i}(t)"> to produce the result image.
-      4) Also, *the discriminator network* <img src="https://latex.codecogs.com/gif.latex?D\Big(x^{i}(t),&space;y^{i}(t)&space;\Big)"> is a conditional relativistic PatchGAN and is used to evaluate the generative performance of the models by predicting realism scores <img src="https://latex.codecogs.com/gif.latex?s^{i}(t)">
+      4) Also, *the discriminator network* <img src="https://latex.codecogs.com/gif.latex?D\Big(x^{i}(t),&space;y^{i}(t)&space;\Big)"> is a conditional relativistic PatchGAN and is used to evaluate the generative performance of all models by predicting realism scores <img src="https://latex.codecogs.com/gif.latex?s^{i}(t)">
       
     - Visualization:
     
@@ -39,7 +39,37 @@
   
   - Training process
   
+    - Multiple losses are used for training:
+    
+      - Adversarial loss
+        - This is a main loss function and it is responsible for the realism of the output.
+        - It is optimized by both generators, the embedder and the discriminator networks.
+      
+      - Pixelwise loss
+        - This loss is responsible for the preservation of the source lightning condition.
+      <p align="center">
+        <img src="https://latex.codecogs.com/gif.latex?L^{G}_{pix}&space;=&space;\frac{1}{HW}\|\hat{x}^{i}_{LF}(t)&space;-&space;x^{i}(t)\|_{1}">
+      </p>
+      
+      - Perceptual loss
+        - This loss is responsible for matching the source identity in the output.
+        - To calculate the perceptual loss, they use the stop-gradient operator, which allows to prevent the gradient flow into a low-frequency component.
+      
+      - Texture mapping regularization loss
+        -  This loss adds robustness to the random initialization of the model.
+      <p align="center">
+        <img src="https://latex.codecogs.com/gif.latex?L^{G}_{reg}&space;=&space;\frac{1}{HW}\|w^{i}(t)&space;-&space;I\|_{1}">
+      </p>
+      
+    - Texture enhancement network is used to fine-tune the generator weights in the few-shot training set in order to minimize the identity gap.
+      - It leads to significant improvement in realism and identity preservation of the synthesized images.
+      - The visualization of the process:
+    <img src="https://user-images.githubusercontent.com/22610398/101676885-76d8ea80-3a64-11eb-8713-d066b8429ea1.png">
+  
   - Implementation details
 
 - Results
+
+  - Here:
+  <img src="https://saic-violet.github.io/bilayer-model/assets/visuals_comp.gif" width="200px">
 
