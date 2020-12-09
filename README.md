@@ -85,9 +85,9 @@
 
 - Results
   - Metrics used for evaluation:
-    - *LPIPS* (Learned perceptual image patch similarity) - measures overall predicted image similarity to ground truth.
-    - *CSIM* - cosine similarity between the embedding vectors of a state-of-the-art face recognition network CSIM, calculated using the synthesized and the target images. This metric evaluates the identity mismatch.
-    - *NME* (Normalized mean error) - Normalized mean error of the head pose in the synthesized image.
+    - *LPIPS* (Learned perceptual image patch similarity) - measures overall predicted image similarity to ground truth - *smaller is better*.
+    - *CSIM* - cosine similarity between the embedding vectors of a state-of-the-art face recognition network CSIM, calculated using the synthesized and the target images. This metric evaluates the identity mismatch - *higher is better*.
+    - *NME* (Normalized mean error) - Normalized mean error of the head pose in the synthesized image - *smaller is better*.
     - *MACs* (Multiply-accumulate operations) - Measure the complexity of each method, specifically the inference stage.
     
   - For the evaluation was used the subset of 50 test videos with different identities from VoxCeleb2 dataset (contains 140697 videos of 5994 different people).
@@ -97,6 +97,7 @@
   - Results against state-of-the-art models by the abovementioned metrics:
     <br/><br/>
     <img src="https://user-images.githubusercontent.com/22610398/101679606-4004d380-3a68-11eb-8098-d4190d80ef6a.png">
+  - The graphs reveal that the proposed model outperforms previous SOTA systems and achieves state-of-the-art quality for the smaller model complexity.
   - Self-driving results:
   <br/><br/>
   ![visuals_self_smaller](https://user-images.githubusercontent.com/22610398/101680229-0ed8d300-3a69-11eb-9ad4-8e45db6527a0.gif)
