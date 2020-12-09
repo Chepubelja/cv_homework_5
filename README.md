@@ -27,12 +27,12 @@
           - These embeddings are then used to initialize adaptive parameters of both inference and texture generators.
       2) After initialization of adaptive parameters, *texture generator* <img src="https://latex.codecogs.com/gif.latex?G_{tex}\Big(\{e^{i}_{k}(s)&space;\}\Big)"> predicts a high-frequency texture. 
           - This texture is initialized once per identity and is aimed to be pose-invariant.
-      3) After initialization of adaptive parameters, the *inference generator* <img src="https://latex.codecogs.com/gif.latex?G_{inf}\Big(y^{i}(t),&space;\{e^{i}_{k}(s)\}&space;\Big)"> takes target keypoints as an input and predicts low-frequency component.
+      3) After initialization of adaptive parameters, the *inference generator* <img src="https://latex.codecogs.com/gif.latex?G_{inf}\Big(y^{i}(t),&space;\{e^{i}_{k}(s)\}&space;\Big)"> takes target keypoints as an input and predicts low-frequency component <img src="https://latex.codecogs.com/gif.latex?\hat{x}_{LF}^{i}(t)">.
           - This low-frequency component encodes basic facial features, skin color and lighting.
-          - After that, the high-frequency component is obtained by warping previously predicted texture.
-          - As a final step, low-frequency and high-frequency components are added together to produce the result image.
-      4) Also, *the discriminator network* <img src="https://latex.codecogs.com/gif.latex?D\Big(x^{i}(t),&space;y^{i}(t)&space;\Big)"> is a conditional relativistic PatchGAN and is used to evaluate the generative performance of the models by predicting realism scores <img src="https://latex.codecogs.com/gif.latex?s^{i}(t)">.
-    
+          - After that, the high-frequency component <img src="https://latex.codecogs.com/gif.latex?\hat{x}_{HF}^{i}(t)"> is obtained by warping previously predicted texture.
+          - As a final step, low-frequency and high-frequency components are added together <img src="https://latex.codecogs.com/gif.latex?\hat{x}^{i}(t)&space;=&space;\hat{x}_{LF}^{i}(t)&space;&plus;&space;\hat{x}_{HF}^{i}(t)"> to produce the result image.
+      4) Also, *the discriminator network* <img src="https://latex.codecogs.com/gif.latex?D\Big(x^{i}(t),&space;y^{i}(t)&space;\Big)"> is a conditional relativistic PatchGAN and is used to evaluate the generative performance of the models by predicting realism scores <img src="https://latex.codecogs.com/gif.latex?s^{i}(t)">
+      
     - Visualization:
     
     <img src="https://saic-violet.github.io/bilayer-model/assets/scheme.png">
