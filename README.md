@@ -34,8 +34,12 @@
       4) Also, *the discriminator network* <img src="https://latex.codecogs.com/gif.latex?D\Big(x^{i}(t),&space;y^{i}(t)&space;\Big)"> is a conditional relativistic PatchGAN and is used to evaluate the generative performance of all models by predicting realism scores <img src="https://latex.codecogs.com/gif.latex?s^{i}(t)">
       
     - Visualization:
-    
+    <br/><br/>
     <img src="https://saic-violet.github.io/bilayer-model/assets/scheme.png">
+  
+    - A visualization of each individual output produced by the model:
+    <br/><br/>
+    ![visuals_comp](https://user-images.githubusercontent.com/22610398/101680600-99213700-3a69-11eb-9bfc-71a2becc30a7.gif)
   
   - Training process
   
@@ -62,14 +66,37 @@
       </p>
       
     - Texture enhancement network is used to fine-tune the generator weights in the few-shot training set in order to minimize the identity gap.
-      - It leads to significant improvement in realism and identity preservation of the synthesized images.
+      - The Updater network accepts the current state of the texture and the guiding gradients to produce the next state. 
+      - The guiding gradients are obtained by reconstructing the source image from the current state of the texture and matching it to the ground-truth via a lightweight updater loss.
+      - The gradients from this loss are then backpropagated through all M copies of the updater network.
+      - This step leads to significant improvement in realism and identity preservation of the synthesized images.
       - The visualization of the process:
+    <br/><br/>
     <img src="https://user-images.githubusercontent.com/22610398/101676885-76d8ea80-3a64-11eb-8713-d066b8429ea1.png">
   
   - Implementation details
+    - All networks consist of pre-activation residual blocks with LeakyReLU activations.
+    - A minimum number of features in these blocks is 64, and a maximum is 512.
+    - Batch normalization is used in all the networks except for the embedder and the texture updater.
+    - Gradient descent is done simultaneously on parameters of the generator networks and the discriminator using Adam optimizer and learning rate of 0.0002.
+    - Batch normalization statistics are synchronized across all GPUs during training.
+    - Spectral normalization is also applied in all linear and convolutional layers of all networks.
+    - All models are trained on 8 NVIDIA P40 GPUs with the batch size of 48 for the base model, and a batch size of 32 for the updater model.
 
 - Results
-
-  - Here:
-  <img src="https://saic-violet.github.io/bilayer-model/assets/visuals_comp.gif" width="200px">
-
+  - Metrics used for evaluation:
+    - *LPIPS* (Learned perceptual image patch similarity) - measures overall predicted image similarity to ground truth.
+    - *CSIM* - cosine similarity between the embedding vectors of a state-of-the-art face recognition network CSIM, calculated using the synthesized and the target images. This metric evaluates the identity mismatch.
+    - *NME* (Normalized mean error) - Normalized mean error of the head pose in the synthesized image.
+    - *MACs* (Multiply-accumulate operations) - Measure the complexity of each method, specifically the inference stage.
+    
+  - For the evaluation was used the subset of 50 test videos with different identities from VoxCeleb2 dataset (contains 140697 videos of 5994 different people).
+  - The comparison is done against 2 state-of-the-art systems:
+    - *Few-shot Vid-to-Vid* - state-of-the-art video-to-video translation system, which has also been successfully applied to this problem.
+    - *First Order Motion Model* (FOMM) is a general motion transfer system that does not use precomputed keypoints, but can also be used as an avatar.
+  - Results against state-of-the-art models by the abovementioned metrics:
+    <br/><br/>
+    <img src="https://user-images.githubusercontent.com/22610398/101679606-4004d380-3a68-11eb-8098-d4190d80ef6a.png">
+  - Self-driving results:
+  <br/><br/>
+  ![visuals_self_smaller](https://user-images.githubusercontent.com/22610398/101680229-0ed8d300-3a69-11eb-9ad4-8e45db6527a0.gif)
